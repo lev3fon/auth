@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PhotosApp.Data;
@@ -23,6 +24,7 @@ namespace PhotosApp.Controllers
             this.mapper = mapper;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var ownerId = GetOwnerId();
@@ -45,6 +47,7 @@ namespace PhotosApp.Controllers
             return View(model);
         }
 
+        [Authorize]
         [HttpGet("photos/{id}")]
         public async Task<IActionResult> GetPhotoFile(Guid id)
         {
@@ -60,6 +63,7 @@ namespace PhotosApp.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPhoto(AddPhotoModel addPhotoModel)
@@ -89,7 +93,7 @@ namespace PhotosApp.Controllers
 
             return RedirectToAction("Index");
         }
-
+        
         public async Task<IActionResult> EditPhoto(Guid id)
         {
             var photo = await photosRepository.GetPhotoMetaAsync(id);
@@ -104,6 +108,7 @@ namespace PhotosApp.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPhoto(EditPhotoModel editPhotoModel)
@@ -123,6 +128,7 @@ namespace PhotosApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> DeletePhoto(Guid id)
         {
@@ -136,6 +142,7 @@ namespace PhotosApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         private string GetOwnerId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
