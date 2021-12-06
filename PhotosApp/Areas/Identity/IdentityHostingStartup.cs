@@ -21,7 +21,8 @@ namespace PhotosApp.Areas.Identity
                         context.Configuration.GetConnectionString("UsersDbContextConnection")));
                 services.AddDefaultIdentity<PhotosAppUser>()
                     .AddEntityFrameworkStores<UsersDbContext>()
-                    .AddPasswordValidator<UsernameAsPasswordValidator<PhotosAppUser>>();
+                    .AddPasswordValidator<UsernameAsPasswordValidator<PhotosAppUser>>()
+                    .AddErrorDescriber<RussianIdentityErrorDescriber>();
 
                 services.Configure<IdentityOptions>(options =>
                 {
@@ -39,6 +40,14 @@ namespace PhotosApp.Areas.Identity
                     options.SignIn.RequireConfirmedEmail = false;
                     options.SignIn.RequireConfirmedPhoneNumber = false;
                 });
+                
+                services.Configure<PasswordHasherOptions>(options =>
+                {
+                    options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV3;
+                    options.IterationCount = 12000;
+                });
+                
+                services.AddScoped<IPasswordHasher<PhotosAppUser>, SimplePasswordHasher<PhotosAppUser>>();
             });
         }
     }
