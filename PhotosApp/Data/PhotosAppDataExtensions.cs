@@ -33,6 +33,8 @@ namespace PhotosApp.Data
                         userManager.SeedWithSampleUsersAsync().Wait();
                         var ticketsDbContext = scope.ServiceProvider.GetRequiredService<TicketsDbContext>();
                         ticketsDbContext.SeedWithSampleTicketsAsync().Wait();
+                        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                        roleManager.SeedWithSampleRolesAsync().Wait();
                     }
                 }
                 catch (Exception e)
@@ -182,6 +184,7 @@ namespace PhotosApp.Data
                     Email = "dev@gmail.com"
                 };
                 await userManager.RegisterUserIfNotExists(user, "Pass!2");
+                await userManager.AddToRoleAsync(user, "Dev");
             }
         }
 
