@@ -108,7 +108,7 @@ namespace PhotosApp.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Policy = "Beta")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPhoto(EditPhotoModel editPhotoModel)
