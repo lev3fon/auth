@@ -40,14 +40,15 @@ namespace PhotosApp
             services.AddHttpContextAccessor();
 
             var connectionString = configuration.GetConnectionString("PhotosDbContextConnection")
-                ?? "Data Source=PhotosApp.db";
+                                   ?? "Data Source=PhotosApp.db";
             services.AddDbContext<PhotosDbContext>(o => o.UseSqlite(connectionString));
             // NOTE: Вместо Sqlite можно использовать LocalDB от Microsoft или другой SQL Server
             //services.AddDbContext<PhotosDbContext>(o =>
             //    o.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PhotosApp;Trusted_Connection=True;"));
 
-            // services.AddScoped<IPhotosRepository, LocalPhotosRepository>();
-            services.AddScoped<IPhotosRepository, RemotePhotosRepository>();
+            services.AddScoped<IPhotosRepository, LocalPhotosRepository>();
+            // services.AddScoped<IPhotosRepository, RemotePhotosRepository>();
+
             services.AddAutoMapper(cfg =>
             {
                 cfg.CreateMap<PhotoEntity, PhotoDto>().ReverseMap();
@@ -78,10 +79,10 @@ namespace PhotosApp
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default", "{controller=Photos}/{action=Index}/{id?}");
